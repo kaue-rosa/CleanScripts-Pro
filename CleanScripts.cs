@@ -98,6 +98,7 @@ public class CleanScripts : EditorWindow
                 {
                     objectsWithMissingScripts.Add(prefab);
                 }
+                SearchChildren(prefab);
             }
         }
 
@@ -105,6 +106,18 @@ public class CleanScripts : EditorWindow
 
         if (!foundMissingScripts)
             EditorUtility.DisplayDialog("Scan Complete", "No missing scripts found!", "OK");
+    }
+
+    void SearchChildren(GameObject parent)
+    {
+        foreach (Transform child in parent.transform)
+        {
+            if(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(child.gameObject) > 0)
+            {
+                objectsWithMissingScripts.Add(child.gameObject);
+            }
+            SearchChildren(child.gameObject);
+        }
     }
 
     void RemoveMissingScripts()
